@@ -1,6 +1,8 @@
-#import code_base as CB
+import sys
+from pathlib import Path
 
-from code_base_EP1 import *
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+from src.code_base_EP1 import *
 
 # fórmulas
 # todos os átomos que serão utilizados nas fórmulas precisam ser declarados

@@ -20,6 +20,6 @@ testpaths = ["tests"]
 target-version = "py310"
 line-length = 100
 extend-exclude = [
-    "code_base_EP1.py",
-    "code_base_EP1_demo.py",
+    "src/code_base_EP1.py",
+    "examples/code_base_EP1_demo.py",
 ]

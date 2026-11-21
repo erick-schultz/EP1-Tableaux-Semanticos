@@ -1,10 +1,10 @@
-from code_base_EP1 import (
+from src.code_base_EP1 import (
     ArgumentForm,
     ListTree,
     get_nodes,
     truth_table_rows,
 )
-from code_base_EP1 import (
+from src.code_base_EP1 import (
     vars as logic_vars,
 )
 

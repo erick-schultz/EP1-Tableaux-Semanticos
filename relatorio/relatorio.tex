@@ -1,0 +1,83 @@
+\documentclass{article}
+\usepackage{longtable}
+\usepackage{booktabs}
+\usepackage{array}
+
+\title{\textbf{Relatório Tableaux Semântico}}
+\author{Erick Schultz \\ Weverton Oliveira da Silva}
+
+\begin{document}
+
+\maketitle
+
+\section{Utilização}
+
+\section*{Execução}
+
+No diretório raiz do projeto, execute o comando:
+
+\begin{verbatim}
+python -m src.main
+\end{verbatim}
+
+\section*{Sintaxe}
+
+As fórmulas devem ser escritas utilizando letras como átomos
+proposicionais, por exemplo, \texttt{p}, \texttt{q} e
+\texttt{r}.
+
+Os operadores lógicos aceitos são:
+
+\begin{itemize}
+    \item Negação: \texttt{\~}, \texttt{¬}
+    \item Conjunção: \texttt{\&}, \texttt{$\land$}
+    \item Disjunção: \texttt{|}, \texttt{$\lor$}
+    \item Implicação: \texttt{->}, \texttt{=>}, \texttt{→}, \texttt{>>}
+    \item Bicondicional: \texttt{<=>}, \texttt{<->}, \texttt{$\leftrightarrow$}
+    \item Parênteses: \texttt{(}, \texttt{)}
+\end{itemize}
+
+$\\\\$
+
+\section{Sequentes utilizados}
+
+Foram utilizados 18 sequentes para testar o funcionamento do
+verificador, contemplando casos válidos e inválidos.
+
+\begin{center}
+\small
+\begin{longtable}{c c c}
+\toprule
+\textbf{Nº} & \textbf{Sequente} & \textbf{Resultado} \\
+\midrule
+\endfirsthead
+
+\toprule
+\textbf{Nº} & \textbf{Sequente} & \textbf{Resultado} \\
+\midrule
+\endhead
+
+1  & $p,\, p \to q \vdash q$ & Válido \\
+2  & $p \to q,\, \neg q \vdash \neg p$ & Válido \\
+3  & $p \lor q,\, \neg p \vdash q$ & Válido \\
+4  & $p \to q,\, q \to r \vdash p \to r$ & Válido \\
+5  & $\neg q \to \neg p \vdash p \to q$ & Válido \\
+6  & $\neg p \to \neg q \vdash p \to q$ & Inválido \\
+7  & $p \to q \vdash p \to (q \lor r)$ & Válido \\
+8  & $p \to q \vdash p \to (q \land r)$ & Inválido \\
+9  & $\neg(p \land q) \vdash \neg p \land \neg q$ & Inválido \\
+10 & $\neg(p \lor q) \vdash \neg p \lor \neg q$ & Válido \\
+11 & $p \lor q,\, \neg q \vdash p$ & Válido \\
+12 & $p \to q,\, q \vdash p$ & Inválido \\
+13 & $p,\, (p \land q) \to r \vdash r$ & Inválido \\
+14 & $p \lor q,\, p \to r,\, q \to (r \lor s) \vdash r$ & Inválido \\
+15 & $p \lor q,\, p \to r,\, q \to r \vdash r$ & Válido \\
+16 & $p \vdash q$ & Inválido \\
+17 & $p \to q,\, \neg p \vdash \neg q$ & Inválido \\
+18 & $p \lor q,\, p \vdash \neg q$ & Inválido \\
+
+\bottomrule
+\end{longtable}
+\end{center}
+
+\end{document}

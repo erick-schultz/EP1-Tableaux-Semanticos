@@ -13,3 +13,8 @@ extend-exclude = [
     "src/code_base_EP1.py",
     "examples/code_base_EP1_demo.py",
 ]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]
+

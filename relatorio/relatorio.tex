@@ -80,4 +80,41 @@ verificador, contemplando casos válidos e inválidos.
 \end{longtable}
 \end{center}
 
+
+\section{Estruturas, estratégias e dificuldades}
+
+\section*{Estruturas de dados}
+
+Para representar as fórmulas e os sequentes, aproveitamos a hierarquia de classes já presente em \texttt{src/code\_base\_EP1.py} (\texttt{Proposition}, \texttt{Variable}, \texttt{Constant}, \texttt{Not}, \texttt{And}, \texttt{Or}, \texttt{Implies}, \texttt{ImpliedBy}, \texttt{Iff} e \texttt{ArgumentForm}). Sobre ela, construímos o módulo \texttt{src/tableaux.py} com as seguintes estruturas principais:
+
+\begin{itemize}
+    \item \texttt{FormulaMarcada}: associa uma fórmula à sua marca booleana (\texttt{T} ou \texttt{F}), além de armazenar sua chave sintática imutável (\texttt{chave}) e o número de nós da subárvore (\texttt{tamanho}). Utilizamos \texttt{\_\_slots\_\_} para reduzir o consumo de memória durante a expansão.
+    \item \texttt{ramo} e \texttt{presentes}: em vez de manter toda a árvore do tableau em memória, armazenamos apenas o ramo ativo em uma lista linear (\texttt{ramo}) acompanhada de um conjunto (\texttt{presentes}) com os identificadores \texttt{(marca, chave)} das fórmulas já inseridas. Isso permite verificar contradições (presença do par conjugado) e evitar inserções duplicadas em tempo $O(1)$.
+    \item \texttt{lineares} e \texttt{betas}: separamos os índices das fórmulas ainda não expandidas no ramo em duas estruturas: uma fila (\texttt{deque}) para regras sem bifurcação e uma lista para regras que bifurcam.
+    \item \texttt{pilha\_ramos}: pilha usada no \emph{backtracking}, onde cada entrada guarda a fórmula do ramo alternativo ($\beta_2$), o tamanho anterior do ramo e uma cópia dos índices de \texttt{betas} pendentes.
+    \item \texttt{ResultadoTableau}: estrutura de retorno que reúne a validade do sequente, o dicionário com o contra-exemplo (quando inválido) e a lista de pares \texttt{(regra, fórmula)} aplicados durante a prova.
+\end{itemize}
+
+\section*{Estratégias utilizadas}
+
+O provador segue o algoritmo geral de Tableaux Analíticos com três escolhas principais de estratégia:
+
+\begin{itemize}
+    \item \textbf{Busca em profundidade (DFS):} o algoritmo expande sempre o ramo atual até que ele feche ou sature. Em uma bifurcação, o segundo ramo ($\beta_2$) é empilhado em \texttt{pilha\_ramos} e a busca continua em $\beta_1$. Quando o ramo fecha, basta descartar as posições adicionadas após a última bifurcação e retomar o topo da pilha. Essa abordagem usa menos memória que a busca em largura e encontra contra-exemplos mais rapidamente quando o sequente é inválido.
+    \item \textbf{Regra $\alpha$-primeiro:} todas as expansões lineares ($\alpha\land$, $\alpha\lor$, $\alpha\to$, $\alpha\neg$ e também $\beta\neg$, que não bifurca) são aplicadas antes de qualquer regra $\beta$ bifurcável. Como expansões lineares não criam novos ramos e podem fechar o ramo atual de imediato, aplicá-las primeiro reduz bastante o tamanho final do tableau.
+    \item \textbf{Heurística de seleção $\beta$:} quando restam apenas fórmulas bifurcáveis, a função \texttt{\_escolher\_beta} dá preferência à fórmula cujas subfórmulas ($\beta_1$ ou $\beta_2$) fecham o ramo imediatamente com alguma fórmula já presente em \texttt{presentes}. Em caso de empate, seleciona a fórmula de menor tamanho sintático. Se apenas $\beta_2$ fechar de imediato, invertemos a ordem para explorar esse ramo primeiro.
+\end{itemize}
+
+Além disso, implementamos um parser descendente recursivo em \texttt{src/parser.py} para converter sequentes em texto diretamente para \texttt{ArgumentForm}, respeitando a precedência dos conectivos ($\neg > \land > \lor > \to > \leftrightarrow$) e a associatividade à direita na implicação.
+
+\section*{Dificuldades encontradas}
+
+Durante o desenvolvimento, os principais desafios foram:
+
+\begin{itemize}
+    \item \textbf{Comparação de fórmulas no código-base:} o método \texttt{\_\_eq\_\_} de \texttt{Proposition} em \texttt{code\_base\_EP1.py} testa equivalência lógica gerando toda a tabela-verdade das fórmulas. Usar essa comparação para checar contradições ou duplicatas tornaria o provador exponencial mesmo em casos simples. Resolvemos isso criando \texttt{chave\_formula}, que gera uma representação sintática em tupla para comparação direta em conjunto.
+    \item \textbf{Operadores n-ários:} os conectivos \texttt{\&} e \texttt{|} do código-base achatam expressões encadeadas em um único nó com mais de dois filhos (por exemplo, \texttt{P \& Q \& R} gera um \texttt{And} com três filhos), além de aceitarem 0 ou 1 filho. Foi necessário tratar esses casos na função \texttt{expandir\_formula}, separando o primeiro filho e reagrupando os restantes.
+    \item \textbf{Tratamento de $\beta\neg$ e constantes:} apesar de $F\,\neg C$ ser classificada como regra $\beta$ na tabela do enunciado, ela não gera bifurcação. Colocá-la na fila linear evitou duplicação de ramos e de regras registradas. Também foi preciso tratar explicitamente as constantes \texttt{True} e \texttt{False}, fechando o ramo sempre que surgem \texttt{T False} ou \texttt{F True}.
+    
+\end{itemize}
 \end{document}

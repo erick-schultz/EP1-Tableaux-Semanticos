@@ -13,13 +13,24 @@ EP1-Tableaux-Semanticos/
 ├── docs/
 │   ├── ep.tableaux.pdf           # Enunciado do EP1
 │   └── livro.partes.tableaux.pdf # Material de apoio (regras e estratégias)
+├── entrega/
+│   ├── main.py                   # CLI com os 18 sequentes do relatório e modo interativo
+│   ├── relatorio_mac0239.pdf     # Cópia do relatório em PDF para entrega
+│   └── tableaux.py               # Versão autocontida (código-base, parser e provador)
+├── examples/
+│   └── code_base_EP1_demo.py     # Demonstração original do código-base
+├── relatorio/
+│   ├── relatorio.tex             # Código-fonte LaTeX do relatório
+│   └── relatorio_mac0239.pdf     # Relatório compilado em PDF
 ├── src/
 │   ├── __init__.py
 │   ├── code_base_EP1.py          # Código-base fornecido (fórmulas, árvores e sequentes)
+│   ├── main.py                   # Entrada interativa simples via terminal
 │   ├── parser.py                 # Parser de fórmulas e sequentes em texto
 │   └── tableaux.py               # Provador de tableaux semânticos
-├── examples/
-│   └── code_base_EP1_demo.py     # Demonstração original do código-base
+├── tests/
+│   ├── test_code_base.py         # Testes do código-base (árvores e tabela-verdade)
+│   └── test_tableaux.py          # Testes do provador e do parser
 ├── pyproject.toml
 ├── .gitignore
 ├── .gitattributes
@@ -29,7 +40,7 @@ EP1-Tableaux-Semanticos/
 ## Como Funciona
 
 - **Estratégia de busca:** busca em profundidade (DFS) mantendo um único ramo ativo e uma pilha de ramificações (`pilha_ramos`) para backtracking.
-- **Ordem das regras:** estratégia **α-primeiro** (expande todas as regras lineares $\alpha\wedge$, $\alpha\vee$, $\alpha\rightarrow$, $\alpha\neg$ e $\beta\neg$ antes de bifurcar).
+- **Ordem das regras:** estratégia **α-primeiro** (expande todas as regras lineares $\alpha\wedge$, $\alpha\vee$, $\alpha\rightarrow$, $\alpha\leftrightarrow$, $\alpha\neg$ e $\beta\neg$ antes de bifurcar).
 - **Escolha de fórmulas β:** prioriza fórmulas que fecham algum ramo imediatamente e, em caso de empate, escolhe a de menor tamanho sintático.
 
 ### Linguagem Suportada no Parser
@@ -40,7 +51,26 @@ EP1-Tableaux-Semanticos/
 
 ## Requisitos
 
-- **Python 3.10+** (usa apenas a biblioteca padrão)
+- **Python 3.10+** (o provador usa apenas a biblioteca padrão)
+- **pytest** *(opcional, apenas para executar a suíte de testes automatizados)*
+
+## Como Executar
+
+A partir da raiz do repositório:
+
+```bash
+# Entrada interativa simples usando os módulos em src/
+python3 -m src.main
+
+# CLI da pasta entrega/: valida os 18 sequentes do relatório e abre o modo interativo
+python3 entrega/main.py
+
+# Executa apenas a validação dos 18 sequentes do relatório
+python3 entrega/main.py --testes
+
+# Avalia um sequente diretamente pela linha de comando
+python3 entrega/main.py "p, p -> q |- q"
+```
 
 ## Exemplos de Uso
 
@@ -77,6 +107,14 @@ P, Q = vars("P", "Q")
 sequente = ArgumentForm(P, P >> Q, conclusion=Q)
 resultado = provar_sequente(sequente)
 print(resultado.valido, resultado.regras_aplicadas)
+```
+
+## Testes
+
+A suíte de testes automatizados em `tests/` verifica o comportamento do código-base, do parser e do provador de tableaux (incluindo consistência com tabela-verdade). Para executá-la a partir da raiz do repositório:
+
+```bash
+pytest
 ```
 
 ## Créditos do Código-Base

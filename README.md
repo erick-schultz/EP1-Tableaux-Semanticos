@@ -1,6 +1,6 @@
 # EP1 — Tableaux Semânticos
 
-Implementação de um provador de teoremas para o Cálculo Proposicional usando o método dos **Tableaux Semânticos** (Analíticos), desenvolvido para a disciplina **MAC0239 — Métodos Formais em Programação** (IME-USP).
+Implementação de um provador de teoremas para o Cálculo Proposicional usando o método dos **Tableaux Semânticos** (Analíticos), desenvolvido para a disciplina **MAC0239 — Introdução à Lógica e Verificação de Programas** (IME-USP).
 
 Dado um sequente $A_1, A_2, \dots, A_n \vdash B$, o programa decide se ele é válido ou não:
 - **Se for válido**, retorna `valido=True` e a sequência de regras aplicadas até o fechamento de todos os ramos.
